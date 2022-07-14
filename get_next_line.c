@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/13 20:40:04 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/14 10:19:37 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 				*stash = ft_substr(buf, 0, BUFFER_SIZE);
 			else
 			{
-				// strjoin will give you new address, so need to free before assign
+				// strjoin will give you new address, so free before assign
 				temp = *stash;
 				*stash = ft_strjoin(*stash, buf);
 				free(temp);
@@ -89,6 +89,19 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 	}
 }
 
+/**
+ * line		: the line that the function is going to return at the end
+ * stash_len: the length of the stash
+ * 
+ * retrieve the line from the stash once a new line is detected.
+ * if the nl_at is greater than and equal to 0, meaning there is a new line
+ * to retrieve the line, create a substr using stash, start from index 0 to
+ * nl_at (index of the new line).
+ * to clean up the stash, use substr as well. start from nl_at + 1 to
+ * stash_len - (nl_at + 1). nl_at start counting from 0 so need plus 1
+ * if nl_at is less than 0, meaning no new line is found also means that
+ * we reach EOF ady. so line will equal the stash.
+**/
 char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
@@ -123,12 +136,16 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 }
 
 /**
- * The process of get next line
+ * buf	: buffer
+ * line	: the return line
+ * nl_at: index of the new line in stash
+ * 
+ * The process to get the line
  * 1. read and stash
  * 2. retrieve and clean
  * 3. return line
 **/
-static char	*gnl_process(int fd, char **stash)
+static char	*get_the_line(int fd, char **stash)
 {
 	char	*buf;
 	char	*line;
@@ -172,6 +189,6 @@ char	*get_next_line(int fd)
 	if (fd < 0 || fd > FILE_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	// get the line
-	line = gnl_process(fd, &stash);
+	line = get_the_line(fd, &stash);
 	return (line);
 }
