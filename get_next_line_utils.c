@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 17:02:08 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/13 20:30:08 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/14 11:40:45 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ size_t	ft_strlen(const char *str)
 	count = 0;
 	while (*str++)
 		count++;
-	return (count);	
+	return (count);
 }
 
 static size_t	ft_get_size(char const *s, unsigned int start, size_t len)

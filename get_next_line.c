@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/14 10:37:12 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/14 11:39:47 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,11 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
+	char	*reset;
 
 	line = NULL;
-	if (*stash == NULL && nl_at == -1)
+	reset = NULL;
+	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
 		return (NULL);
 	stash_len = ft_strlen(*stash);
 	if (nl_at >= 0)
@@ -106,7 +108,8 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	else
 	{
 		line = ft_strdup(*stash);
-		*stash = "";
+		*stash = reset;
+		free(reset);
 	}
 	return (line);
 }

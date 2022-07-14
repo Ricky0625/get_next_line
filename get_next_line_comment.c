@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_comment.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/14 10:19:37 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/14 11:42:07 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,15 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
+	char	*reset;
 
 	line = NULL;
+	reset = NULL;
 	// if after read, stash is null and nl_at is -1, return null
-	if (*stash == NULL && nl_at == -1)
+	// if the buffer size is 1, it only reads one character at a time.
+	// it is possible that it may read '\0', so stash will be "\0", this is not
+	// NULL, so we need to check if the stash[0] == '\0'. if yes, return NULL
+	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
 		return (NULL);
 	stash_len = ft_strlen(*stash);
 	// three reason that this function will be invoked:
@@ -129,8 +134,13 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	}
 	else
 	{
+		// the reason this part of code will be executed is because nl_at is -1
+		// meaning no new line is found in the stash
+		// strdup will not give you new address, can directly assign
 		line = ft_strdup(*stash);
-		*stash = "";
+		// reset is null, set stash to equal reset
+		*stash = reset;
+		free(reset);
 	}
 	return (line);
 }
