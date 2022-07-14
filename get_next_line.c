@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/14 11:39:47 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/14 13:28:35 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 				*stash = ft_substr(buf, 0, BUFFER_SIZE);
 			else
 			{
-				temp = *stash;
-				*stash = ft_strjoin(*stash, buf);
-				free(temp);
+				temp = ft_strjoin(*stash, buf);
+				free(*stash);
+				*stash = temp;
 			}
 			if (found_new_line(*stash, nl_at) == 1)
 				break ;
@@ -109,7 +109,7 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	{
 		line = ft_strdup(*stash);
 		*stash = reset;
-		free(reset);
+		// free(reset);
 	}
 	return (line);
 }
@@ -136,6 +136,7 @@ static char	*get_the_line(int fd, char **stash)
 	nl_at = -1;
 	read_and_stash(fd, buf, stash, &nl_at);
 	line = retrieve_and_clean(stash, nl_at);
+	free(buf);
 	return (line);
 }
 
