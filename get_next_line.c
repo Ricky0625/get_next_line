@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/14 13:28:35 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/15 17:25:49 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,21 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 		{
 			buf[bytes_read] = '\0';
 			if (*stash == NULL)
-				*stash = ft_substr(buf, 0, BUFFER_SIZE);
+			{
+				*stash = ft_strdup(buf);
+			}
 			else
 			{
-				temp = ft_strjoin(*stash, buf);
-				free(*stash);
-				*stash = temp;
+				temp = *stash;
+				*stash = ft_strjoin(temp, buf);
+				free(temp);
 			}
 			if (found_new_line(*stash, nl_at) == 1)
 				break ;
 			bytes_read = read(fd, buf, BUFFER_SIZE);
 		}
 	}
+	free(buf);
 }
 
 /**
@@ -93,23 +96,23 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
-	char	*reset;
+	int     stashsub_len;
 
 	line = NULL;
-	reset = NULL;
 	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
 		return (NULL);
 	stash_len = ft_strlen(*stash);
-	if (nl_at >= 0)
+	stashsub_len = stash_len - (nl_at + 1);
+	if (nl_at >= 0 && stashsub_len != 0)
 	{
 		line = ft_substr(*stash, 0, (nl_at + 1));
-		*stash = ft_substr(*stash, (nl_at + 1), stash_len - (nl_at + 1));
+		*stash = ft_substr(*stash, (nl_at + 1), stashsub_len);
 	}
 	else
 	{
 		line = ft_strdup(*stash);
-		*stash = reset;
-		// free(reset);
+		free(*stash);
+		*stash = NULL;
 	}
 	return (line);
 }
@@ -135,8 +138,8 @@ static char	*get_the_line(int fd, char **stash)
 		return (NULL);
 	nl_at = -1;
 	read_and_stash(fd, buf, stash, &nl_at);
+	// free(buf);
 	line = retrieve_and_clean(stash, nl_at);
-	free(buf);
 	return (line);
 }
 
@@ -156,11 +159,9 @@ static char	*get_the_line(int fd, char **stash)
 **/
 char	*get_next_line(int fd)
 {
-	char		*line;
 	static char	*stash;
 
 	if (fd < 0 || fd > FILE_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = get_the_line(fd, &stash);
-	return (line);
+	return (get_the_line(fd, &stash));
 }

@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 17:02:08 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/14 11:40:45 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/15 14:17:58 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,38 +22,33 @@ size_t	ft_strlen(const char *str)
 	return (count);
 }
 
-static size_t	ft_get_size(char const *s, unsigned int start, size_t len)
-{
-	size_t	length;
+// static size_t	ft_get_size(char const *s, unsigned int start, size_t len)
+// {
+// 	size_t	length;
 
-	length = ft_strlen(s);
-	if (start >= length)
-		return (0);
-	if ((start + len) > length)
-		return (length - start);
-	return (len);
-}
+// 	length = ft_strlen(s);
+// 	if (start >= length)
+// 		return (0);
+// 	if ((start + len) > length)
+// 		return (length - start);
+// 	return (len);
+// }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t	index;
-	char	*str;
+	char	*ret;
+	char	*tmp;
+	size_t	i;
 
-	if (!s)
-		return (NULL);
-	len = ft_get_size(s, start, len);
-	str = malloc(sizeof(char) * (len + 1));
-	if (str == NULL)
-		return (NULL);
-	index = 0;
-	while (len-- && *(s + start))
-	{
-		*(str + index) = *(s + start);
-		index++;
-		start++;
-	}
-	*(str + index) = '\0';
-	return (str);
+	ret = malloc(sizeof(char) * (len + 1));
+	if (!ret)
+		return (0);
+	tmp = (char *)s + start;
+	i = 0;
+	while (*tmp && i < len)
+		ret[i++] = *tmp++;
+	ret[i] = 0;
+	return (ret);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
