@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/18 13:46:54 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/18 14:22:14 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
-	int     stashsub_len;
+	int		stashsub_len;
 	char	*temp;
 
 	line = NULL;
