@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/15 17:25:49 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/18 13:46:54 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 			bytes_read = read(fd, buf, BUFFER_SIZE);
 		}
 	}
-	free(buf);
 }
 
 /**
@@ -97,6 +96,7 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	char	*line;
 	size_t	stash_len;
 	int     stashsub_len;
+	char	*temp;
 
 	line = NULL;
 	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
@@ -106,7 +106,9 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	if (nl_at >= 0 && stashsub_len != 0)
 	{
 		line = ft_substr(*stash, 0, (nl_at + 1));
-		*stash = ft_substr(*stash, (nl_at + 1), stashsub_len);
+		temp = *stash;
+		*stash = ft_substr(temp, (nl_at + 1), stashsub_len);
+		free(temp);
 	}
 	else
 	{
@@ -138,14 +140,13 @@ static char	*get_the_line(int fd, char **stash)
 		return (NULL);
 	nl_at = -1;
 	read_and_stash(fd, buf, stash, &nl_at);
-	// free(buf);
+	free(buf);
 	line = retrieve_and_clean(stash, nl_at);
 	return (line);
 }
 
 /**
  * GET_NEXT_LINE
- * buf  : to store the nbytes of data after read
  * stash: a temporary storage to store the data read from file b4 a newline is
  *        detected
  * 
