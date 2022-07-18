@@ -6,16 +6,18 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/18 14:22:14 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/18 14:42:18 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /**
+ * index: just to iterate thru the stash
+ * 
  * iterate through stash and check if there is a new line
- * if yes, return 1 (true)
- * if no, return 0 (false)
+ * if yes, return 1 (true), update nl_at to the index of new line.
+ * if no, return 0 (false), update nl_at to -1, meaning not found.
 **/
 static int	found_new_line(char *stash, int *nl_at)
 {
@@ -43,12 +45,17 @@ static int	found_new_line(char *stash, int *nl_at)
  * those nbytes into stash
  * 
  * Flow
- * 1. read from file, store to buf
- * 2. check if there is a new line
- * 		a. yes. store buf to stash first, break loop
- * 		b. no. store buf to stash, continue loop
+ * 1. check if stash is null (first read) or there is no '\n' in stash
+ * 	  if any of these condition met, meaning we should read from file
+ * 2. read from file, store to buf
+ * 3. store buf to stash
+ * 3. check if there is a new line in stash everytime stash is modified
+ * 		a. yes. break loop, ready to return a new line
+ * 		b. no. continue to read, as long as the bytes that read get is
+ * 		   not 1, continue.
  * after this function end, the stash should contain a whole line with '\n'
  * that is ready for return
+ * if no '\n', meaning read reaches EOF
 **/
 static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 {
@@ -62,9 +69,7 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 		{
 			buf[bytes_read] = '\0';
 			if (*stash == NULL)
-			{
 				*stash = ft_strdup(buf);
-			}
 			else
 			{
 				temp = *stash;
@@ -81,8 +86,11 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 /**
  * line		: the line that the function is going to return at the end
  * stash_len: the length of the stash
+ * stashsub_len: the length of the stash after clean up
+ * temp		: temporary string
  * 
  * retrieve the line from the stash once a new line is detected.
+ * 
  * if the nl_at is greater than and equal to 0, meaning there is a new line
  * to retrieve the line, create a substr using stash, start from index 0 to
  * nl_at (index of the new line).
