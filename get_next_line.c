@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/18 14:42:18 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/19 17:25:25 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 /**
  * line		: the line that the function is going to return at the end
  * stash_len: the length of the stash
- * stashsub_len: the length of the stash after clean up
+ * remain_len: the length of the stash after clean up
  * temp		: temporary string
  * 
  * retrieve the line from the stash once a new line is detected.
@@ -103,19 +103,19 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
-	int		stashsub_len;
+	int		remain_len;
 	char	*temp;
 
 	line = NULL;
 	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
 		return (NULL);
 	stash_len = ft_strlen(*stash);
-	stashsub_len = stash_len - (nl_at + 1);
-	if (nl_at >= 0 && stashsub_len != 0)
+	remain_len = stash_len - (nl_at + 1);
+	if (nl_at >= 0 && remain_len != 0)
 	{
 		line = ft_substr(*stash, 0, (nl_at + 1));
 		temp = *stash;
-		*stash = ft_substr(temp, (nl_at + 1), stashsub_len);
+		*stash = ft_strdup(temp + (nl_at + 1));
 		free(temp);
 	}
 	else
