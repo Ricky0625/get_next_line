@@ -31,6 +31,13 @@ Read as little as possible each time `get_next_line()` is called. If encounter a
 
 Resource: [File Descriptor](https://www.computerhope.com/jargon/f/file-descriptor.htm#:~:text=A%20file%20descriptor%20is%20a,Grants%20access.)
 
+File descriptor is a reference that points to a file that is open on your computer. So, when we open a file, the operating system will create an entry in the global file table. The table will contains info such as the fd, access restrictions (read-only, write-only), and its location. Usually the file descriptor will have a non-negative integer values and there will be at least one fd exists for every open file on the system.
+
+On a Unix-like OS, the first three file descriptors, are reserved.
+0: standard input
+1: standard output
+2: standard error
+
 File descriptor is a unique identifer for a file or other I/O resource, such as a pipe or network socket. It describes a data resource, and how that resource can be accessed. When a program asks to open a file or other data resource like network socket, the kernel will:
 
 1. Grant access
@@ -90,5 +97,13 @@ static char *z; // default value: (null)
 ```
 
 The value of a static variable will be cleared when the program ends. It's not stored on the stack. Static variables are allocated memory in data segment.
+
+The lifetime of a static variable is the entire run of the program.
+
+Double pointer: A pointer stores the address of another pointer.
+
+Use double pointer because I want to alter or change the value of the stash inside the function. In C, you can either pass by value or reference. If you pass by value in a function call, then changes made in the function won't reflect at calling place.
+
+Soft limit is the value of the current process limit that is enforced by the operating system. For, linux the soft limit for each process is 1024, 
 
 ![Memory layout of C](https://i0.wp.com/rjp.b44.myftpupload.com/wp-content/uploads/2019/12/image-9.png?resize=623%2C439)

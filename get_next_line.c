@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/19 17:25:25 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/26 10:01:05 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 	char	*temp;
 
 	line = NULL;
-	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
+	if (*stash == NULL && nl_at == -1)
 		return (NULL);
 	stash_len = ft_strlen(*stash);
 	remain_len = stash_len - (nl_at + 1);

@@ -6,7 +6,7 @@
 /*   By: wricky-t <wricky-t@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 14:15:16 by wricky-t          #+#    #+#             */
-/*   Updated: 2022/07/18 14:58:47 by wricky-t         ###   ########.fr       */
+/*   Updated: 2022/07/26 10:03:23 by wricky-t         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,9 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 		while (bytes_read > 0)
 		{
 			buf[bytes_read] = '\0';
-			// substr will not give you new address so can directly assign
+			// since previously stash is null, so no need to free
 			if (*stash == NULL)
-				*stash = ft_substr(buf, 0, BUFFER_SIZE);
+				*stash = ft_strdup(buf);
 			else
 			{
 				// strjoin will give you new address, so free before assign
@@ -99,7 +99,7 @@ static void	read_and_stash(int fd, char *buf, char **stash, int *nl_at)
 /**
  * line		: the line that the function is going to return at the end
  * stash_len: the length of the stash
- * stashsub_len: the length of the stash after clean up
+ * remain_len: the length of the stash after clean up
  * temp		: temporary string
  * 
  * retrieve the line from the stash once a new line is detected.
@@ -116,23 +116,20 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 {
 	char	*line;
 	size_t	stash_len;
-	int		stashsub_len;
+	int		remain_len;
 	char	*temp;
 
 	line = NULL;
 	// if after read, stash is null and nl_at is -1, return null
-	// if the buffer size is 1, it only reads one character at a time.
-	// it is possible that it may read '\0', so stash will be "\0", this is not
-	// NULL, so we need to check if the stash[0] == '\0'. if yes, return NULL
-	if ((*stash == NULL && nl_at == -1) || *stash[0] == '\0')
+	if (*stash == NULL && nl_at == -1)
 		return (NULL);
 	stash_len = ft_strlen(*stash);
-	stashsub_len = stash_len - (nl_at + 1);
+	remain_len = stash_len - (nl_at + 1);
 	// three reason that this function will be invoked:
 	//		1. nothing to read, stash is NULL
 	//		2. detected new line in the stash
 	//		3. reach EOF, need to return the last string
-	if (nl_at >= 0)
+	if (nl_at >= 0 && remain_len != 0)
 	{
 		// retrieve the line, nl_at start counting from 0, len start counting from 1
 		// so in order to get the len, we need to nl_at + 1
@@ -147,7 +144,7 @@ char	*retrieve_and_clean(char **stash, int nl_at)
 		// let temp point to the previous stash
 		temp = *stash;
 		// clean up the stash will return a new address
-		*stash = ft_substr(temp, (nl_at + 1), stashsub_len);
+		*stash = ft_substr(temp, (nl_at + 1), remain_len);
 		// since temp is pointing to the previous stash, to free the previous stash,
 		// we can just free the temp
 		free(temp);
